@@ -126,3 +126,18 @@ if (localStorage.getItem('theme') === 'dark') {
 }
 
 initLLM();
+// ... (решта коду як раніше, додай в кінець initLLM)
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-theme');
+  const icon = document.querySelector('.theme-toggle i');
+  icon.classList.toggle('fa-moon');
+  icon.classList.toggle('fa-sun');
+  localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+}
+
+// Завантаження теми з localStorage
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark-theme');
+  document.querySelector('.theme-toggle i').classList.replace('fa-moon', 'fa-sun');
+}
