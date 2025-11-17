@@ -7,13 +7,14 @@
   <link rel="manifest" href="manifest.json">
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.18/dist/web-llm.js"></script>
-  <style> body { font-family: Arial; padding: 20px; } input, button { margin: 10px; padding: 10px; } #result { border: 1px solid #ccc; padding: 10px; height: 300px; overflow: auto; } </style>
+  <style> body { font-family: Arial; padding: 20px; } input, button { margin: 10px; padding: 10px; } #result { border: 1px solid #ccc; padding: 10px; height: 300px; overflow: auto; } #loading { color: green; } </style>
 </head>
 <body>
-  <h1>Офлайн PDF-Аналізатор UA</h1>
+  <h1>Офлайн PDF-Аналізатор UA (переказ, спрощення, ключі)</h1>
   <input type="file" id="pdfInput" accept=".pdf" />
-  <input type="text" id="keywordsInput" placeholder="Ключові слова (через кому)" />
+  <input type="text" id="keywordsInput" placeholder="Ключові слова (через кому, напр. екологія, реформи)" />
   <button onclick="analyzePDF()">Аналізувати</button>
+  <div id="loading" style="display: none;">Завантажую модель LLM...</div>
   <div id="result"></div>
   <script src="app.js"></script>
   <script>
