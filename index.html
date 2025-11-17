@@ -10,7 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.18/dist/web-llm.js"></script>
   <style>
-    /* Inline стилі для гарантії завантаження (копія з styles.css) */
+    /* Inline стилі (як раніше) */
     :root {
       --primary-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       --dark-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -29,10 +29,11 @@
     .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; display: grid; gap: 20px; align-items: center; }
     h1 { text-align: center; color: var(--primary-color); text-shadow: 1px 1px 2px rgba(0,0,0,0.1); font-size: 2em; margin-bottom: 0; animation: fadeInDown 1s ease-out; }
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    .upload-area { position: relative; display: grid; place-items: center; }
+    .upload-area { position: relative; display: grid; place-items: center; transition: var(--transition); }
     #pdfInput { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
     label[for="pdfInput"] { padding: 40px; border: 2px dashed var(--primary-color); border-radius: 12px; text-align: center; cursor: pointer; transition: var(--transition); background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-    label[for="pdfInput"]:hover { background: rgba(0, 123, 255, 0.1); transform: scale(1.02); border-color: #0056b3; }
+    label[for="pdfInput"]:hover { background: rgba(0, 123, 255, 0.1); transform: scale(1.02); border-color: #0056b3; animation: fileHover 0.5s ease-out; }
+    @keyframes fileHover { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1.02); } }
     body.dark-theme label[for="pdfInput"] { background: rgba(0, 0, 0, 0.3); }
     input[type="text"] { padding: 15px; border-radius: 25px; border: 1px solid rgba(0, 0, 0, 0.1); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); transition: var(--transition); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
     input[type="text"]:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); outline: none; }
@@ -85,9 +86,17 @@
     <div id="result" class="glass-card hidden"></div>
   </div>
   <script>
-    // Inline app.js для гарантії (логіка аналізу)
+    // Inline app.js для гарантії (логіка аналізу з анімацією завантаження)
     let llm = null;
     let pdfText = '';
+
+    // Анімація для завантаження файлу (onchange)
+    document.getElementById('pdfInput').addEventListener('change', function() {
+      const label = document.querySelector('label[for="pdfInput"]');
+      label.style.animation = 'fileHover 0.5s ease-out';
+      setTimeout(() => label.style.animation = '', 500);
+      console.log('Файл завантажено: ' + this.files[0].name);  // Лог для дебагу
+    });
 
     async function initLLM() {
       const loading = document.getElementById('loading');
