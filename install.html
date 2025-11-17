@@ -1,146 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Встановлення PDF-Аналізатора UA на Android</title>
-  <link rel="manifest" href="manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      padding: 20px;
-      background: linear-gradient(135deg, #ffed4e 0%, #007bff 100%);  /* Жовто-блакитний градієнт для UA */
-      color: #333;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    h1 {
-      text-align: center;
-      color: white;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      margin-bottom: 30px;
-      animation: fadeInDown 1s ease-out;
-    }
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .container {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      padding: 30px;
-      max-width: 600px;
-      width: 90%;
-      animation: fadeInUp 1s ease-out 0.5s both;
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .step {
-      display: flex;
-      align-items: center;
-      margin: 20px 0;
-      padding: 15px;
-      background: #f8f9fa;
-      border-radius: 10px;
-      border-left: 5px solid #007bff;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .step:hover {
-      transform: translateX(5px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .step-number {
-      background: #007bff;
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      margin-right: 15px;
-      animation: bounce 0.6s ease-in-out;
-    }
-    @keyframes bounce {
-      0%, 20%, 60%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      80% { transform: translateY(-5px); }
-    }
-    .step-text {
-      flex: 1;
-      line-height: 1.5;
-    }
-    .step-icon {
-      margin-left: 15px;
-      font-size: 20px;
-      color: #28a745;
-    }
-    .back-button {
-      background: linear-gradient(45deg, #28a745, #20c997);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      margin-top: 20px;
-      transition: all 0.3s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .back-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-    }
-    @media (max-width: 600px) {
-      .container { padding: 20px; }
-      .step { flex-direction: column; text-align: center; }
-      .step-number { margin-bottom: 10px; margin-right: 0; }
-      .step-icon { margin-top: 10px; }
-    }
-  </style>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Інструкція: PDF-Аналізатор</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <h1><i class="fas fa-mobile-alt"></i> Як встановити PDF-Аналізатор UA на Android</h1>
-  <div class="container">
-    <div class="step">
-      <div class="step-number">1</div>
-      <div class="step-text">
-        <strong>Відкрий сайт у Google Chrome на телефоні:</strong><br>
-        Перейди за посиланням <a href="https://mo-love.github.io/pdf-analizator-pwa/" style="color: #007bff;"mo-love.github.io/pdf-analizator-pwa</a>.<br>
-        Зачекай завантаження (перший раз модель кешуватиметься ~500 MB для офлайн).
-      </div>
-      <i class="fas fa-globe step-icon"></i>
-    </div>
-    <div class="step">
-      <div class="step-number">2</div>
-      <div class="step-text">
-        <strong>Додай на головний екран:</strong><br>
-        Натисни меню (три крапки у правому верхньому куті) → "Додати на головний екран" (або "Install app").<br>
-        Підтвердь "Додати" — іконка з'явиться на екрані!
-      </div>
-      <i class="fas fa-plus-circle step-icon"></i>
-    </div>
-    <div class="step">
-      <div class="step-number">3</div>
-      <div class="step-text">
-        <strong>Готово! Запусти з іконки:</strong><br>
-        Додаток відкриється у повноекранному режимі (без браузера).<br>
-        Офлайн: Працює без інтернету після першого запуску. Тестуй з UA-PDF!
-      </div>
-      <i class="fas fa-check-circle step-icon"></i>
-    </div>
-    <a href="https://mo-love.github.io/pdf-analizator-pwa/" class="back-button"><i class="fas fa-arrow-left"></i> Повернутися до головного</a>
-  </div>
+  <main class="container">
+    <h1>Як встановити PWA на Android (Chrome)</h1>
+    <ol>
+      <li>Відкрий: <a href="https://mo-love.github.io/pdf-analizator-pwa/">mo-love.github.io/pdf-analizator-pwa</a></li>
+      <li>Зачекай перше кешування моделі (~500 MB).</li>
+      <li>Меню Chrome → «Додати на головний екран» → «Додати».</li>
+    </ol>
+  </main>
 </body>
 </html>
