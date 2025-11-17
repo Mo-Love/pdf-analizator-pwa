@@ -10,7 +10,7 @@ async function initLLM() {
     const selectedModel = await webllm.GetWebLLMModel('Gemma-2B-2bit');
     llm = await selectedModel.create();
     loading.innerHTML = '<div class="spinner"></div>Модель готова!';
-    setTimeout(() => loading.style.display = 'none', 1000);  // Fade out
+    setTimeout(() => loading.style.display = 'none', 1000);
   } catch (error) {
     console.error('LLM error:', error);
     loading.innerHTML = 'Fallback-режим (базовий аналіз без AI)';
@@ -22,21 +22,34 @@ async function initLLM() {
 async function analyzePDF() {
   const fileInput = document.getElementById('pdfInput');
   const file = fileInput.files[0];
-  if (!file) return alert('Обери PDF!');
+  if (!file) {
+    fileInput.classList.add('error-shake');  // Анімація "трусіння" для помилки
+    setTimeout(() => fileInput.classList.remove('error-shake'), 500);
+    return alert('Обери PDF!');
+  }
 
   const loading = document.getElementById('loading');
+  const progressBar = document.getElementById('progressBar');
+  const progressFill = document.getElementById('progressFill');
   loading.style.display = 'block';
-  loading.innerHTML = '<div class="spinner"></div>Аналізую PDF...';
+  progressBar.style.display = 'block';
+  loading.innerHTML = '<div class="spinner"></div>Парсю PDF...';
 
   try {
     const arrayBuffer = await file.arrayBuffer();
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
     const pdf = await loadingTask.promise;
     pdfText = '';
-    for (let i = 1; i <= pdf.numPages; i++) {
+    const totalPages = pdf.numPages;
+    for (let i = 1; i <= totalPages; i++) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       pdfText += textContent.items.map(item => item.str).join(' ') + '\n--- Сторінка ' + i + ' ---\n';
+      
+      // Анімація прогресу
+      const progress = (i / totalPages) * 100;
+      progressFill.style.width = progress + '%';
+      loading.innerHTML = `<div class="spinner"></div>Обробляю сторінку ${i}/${totalPages}...`;
     }
 
     const keywords = document.getElementById('keywordsInput').value;
@@ -48,6 +61,9 @@ async function analyzePDF() {
 
     let summary = '';
     let matches = '';
+
+    loading.innerHTML = '<div class="spinner"></div>Генерую переказ та пошук...';
+    progressFill.style.width = '100%';  // Завершення прогресу
 
     if (llm) {
       const summaryPrompt = `Зроби короткий переказ тексту українською (3 речення, простими словами): ${pdfText.substring(0, 2000)}`;
@@ -82,11 +98,15 @@ async function analyzePDF() {
       <strong>Переказ:</strong> ${summary}<br>
       <strong>Співпадіння по ключам:</strong> <pre>${matches}</pre>
     `;
-    result.style.animation = 'slideIn 0.5s ease-out';  // Анімація появи
+    result.style.opacity = '1';  // Активація fade-in
   } catch (error) {
     document.getElementById('result').innerHTML = `Помилка: ${error.message}`;
+    document.getElementById('result').classList.add('error-shake');  // Трусіння для помилки
+    setTimeout(() => document.getElementById('result').classList.remove('error-shake'), 500);
   } finally {
     loading.style.display = 'none';
+    progressBar.style.display = 'none';
+    progressFill.style.width = '0%';
   }
 }
 
