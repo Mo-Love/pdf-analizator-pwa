@@ -40,6 +40,17 @@
         <button id="analyzeBtn" disabled>Аналізувати PDF</button>
         <button id="showFullTextBtn" disabled>Показати повний текст</button>
       </div>
+      <div class="search-section">
+  <label for="searchInput">Пошук по ключових словах (через кому):</label>
+  <input id="searchInput" type="text" placeholder="екологія, реформи, вода">
+  <button id="searchBtn" disabled>Знайти співпадіння</button>
+</div>
+
+<div id="searchResults" class="card" style="display:none">
+  <h3>Результати пошуку:</h3>
+  <ul id="matchesList"></ul>
+</div>
+
     </section>
 
     <section id="results" class="results">
