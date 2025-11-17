@@ -1,4 +1,3 @@
-/* app.js */
 const pdfInput = document.getElementById('pdfInput');
 const fileNameEl = document.getElementById('fileName');
 const loadingIndicator = document.getElementById('loadingIndicator');
@@ -8,11 +7,13 @@ const showFullTextBtn = document.getElementById('showFullTextBtn');
 const fullTextContainer = document.getElementById('fullTextContainer');
 const summaryEl = document.getElementById('summary');
 const phrasesList = document.getElementById('phrasesList');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const searchResults = document.getElementById('searchResults');
+const matchesList = document.getElementById('matchesList');
 
 let extractedText = '';
 let currentFile = null;
-
-/* PDF.js worker (CDN) */
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
 
 pdfInput.addEventListener('change', async (e) => {
@@ -22,6 +23,7 @@ pdfInput.addEventListener('change', async (e) => {
   fileNameEl.textContent = file.name;
   analyzeBtn.disabled = true;
   showFullTextBtn.disabled = true;
+  searchBtn.disabled = true;
 
   try{
     showLoading('Читаю PDF...');
@@ -29,6 +31,7 @@ pdfInput.addEventListener('change', async (e) => {
     fullTextContainer.textContent = extractedText || '(Документ порожній або не вдалося витягнути текст)';
     showFullTextBtn.disabled = false;
     analyzeBtn.disabled = false;
+    searchBtn.disabled = false;
     hideLoading();
   } catch(err){
     console.error(err);
@@ -47,7 +50,6 @@ analyzeBtn.addEventListener('click', async () => {
   if(!extractedText) return alert('Спочатку завантажте PDF та дочекайтеся витягнення тексту.');
   try{
     showLoading('Аналізую текст...');
-    // TODO: підключити реальний LLM / бекенд
     const analysis = await analyzeText(extractedText);
     renderAnalysis(analysis);
     hideLoading();
@@ -56,6 +58,12 @@ analyzeBtn.addEventListener('click', async () => {
     hideLoading();
     alert('Помилка під час аналізу: ' + (err.message || err));
   }
+});
+
+searchBtn.addEventListener('click', () => {
+  const query = searchInput.value.trim();
+  if(!query) return alert('Введіть хоча б одне ключове слово.');
+  performSearch(query, extractedText);
 });
 
 function showLoading(text='Завантаження...'){
@@ -79,7 +87,6 @@ async function extractTextFromPDF(file){
 }
 
 async function analyzeText(text){
-  // Поки що локальний псевдо-аналіз (замінити на реальний виклик API)
   await new Promise(r=>setTimeout(r,800));
   const summary = text.split('\n').slice(0,5).join(' ').slice(0,700) + '...';
   const phrases = extractKeyPhrases(text).slice(0,10);
@@ -90,8 +97,7 @@ function extractKeyPhrases(text){
   const words = text.toLowerCase().replace(/[^a-zа-яёіїєґ0-9\s]+/gi,' ').split(/\s+/).filter(Boolean);
   const freq = {};
   for(const w of words){ if(w.length>3) freq[w] = (freq[w]||0)+1; }
-  const arr = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
-  return arr.slice(0,25);
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(x=>x[0]).slice(0,25);
 }
 
 function renderAnalysis({summary, phrases}){
@@ -108,42 +114,12 @@ if(accBtn){
   });
 }
 
-/* Install prompt handler (зберігаємо для кастомної кнопки за потреби) */
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
-
-/* Service worker: відносний шлях! */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js')
-    .then(()=>console.log('Service Worker registered'))
-    .catch(err=>console.warn('SW register failed', err));
-}
-
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const searchResults = document.getElementById('searchResults');
-const matchesList = document.getElementById('matchesList');
-
-// Дозволити пошук тільки якщо є текст
-pdfInput.addEventListener('change', () => {
-  searchBtn.disabled = !extractedText;
-});
-
-searchBtn.addEventListener('click', () => {
-  const query = searchInput.value.trim();
-  if(!query) return alert('Введіть хоча б одне ключове слово.');
-  performSearch(query, extractedText);
-});
-
+/* Пошук та підсвітка */
 function performSearch(query, text){
   const words = query.split(',').map(w => w.trim().toLowerCase()).filter(Boolean);
   if(words.length === 0) return;
 
-  // Очищуємо попереднє підсвічування
-  let displayText = extractedText;
+  let displayText = text;
   const counts = {};
 
   words.forEach(word=>{
@@ -156,7 +132,6 @@ function performSearch(query, text){
   fullTextContainer.style.display = 'block';
   fullTextContainer.setAttribute('aria-hidden', 'false');
 
-  // Відображення результатів
   matchesList.innerHTML = '';
   for(const [word,count] of Object.entries(counts)){
     const li = document.createElement('li');
@@ -166,8 +141,11 @@ function performSearch(query, text){
   searchResults.style.display = 'block';
 }
 
-// допоміжна функція для escape RegExp
-function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+function escapeRegExp(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
+/* Service Worker */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js')
+    .then(()=>console.log('Service Worker registered'))
+    .catch(err=>console.warn('SW register failed', err));
+}
