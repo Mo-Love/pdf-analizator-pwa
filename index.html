@@ -1,38 +1,30 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF-Аналізатор — Інструкція</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF-Аналізатор</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="glass-container">
 
-    <div class="glass-container">
+    <h2 class="title">📱 Інструкція: встановлення на Android (Chrome)</h2>
 
-        <h2 class="title">📱 Інструкція: встановлення на Android (Chrome)</h2>
+    <!-- Поле завантаження PDF -->
+    <input type="file" id="file-input" accept="application/pdf" />
 
-        <!-- 🔍 Поле пошуку -->
-        <input 
-            id="searchInput" 
-            type="text" 
-            placeholder="Пошук по інструкції..." 
-            class="search-box"
-        >
+    <!-- Кнопка аналізу -->
+    <button id="analyze-btn">Аналізувати PDF</button>
 
-        <!-- 📄 Текст інструкції -->
-        <div id="content" class="content">
-            <p>Щоб встановити PDF-Аналізатор на Android через Chrome, виконайте наступні кроки:</p>
-            <p>1. Відкрийте Google Chrome.</p>
-            <p>2. Перейдіть на сторінку PDF-Аналізатора.</p>
-            <p>3. Натисніть меню (три крапки у правому верхньому куті).</p>
-            <p>4. Оберіть "Додати на головний екран".</p>
-            <p>5. Підтвердьте встановлення.</p>
-            <p>Тепер додаток зʼявиться на головному екрані вашого Android.</p>
-        </div>
+    <!-- Поле пошуку по інструкції (як раніше) -->
+    <input id="searchInput" type="text" placeholder="Пошук по інструкції..." class="search-box" />
 
+    <div id="content" class="content">
+      <p>Тут може бути текст інструкції або результати аналізу PDF.</p>
     </div>
+  </div>
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
