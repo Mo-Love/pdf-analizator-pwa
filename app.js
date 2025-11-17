@@ -121,3 +121,53 @@ if('serviceWorker' in navigator){
     .then(()=>console.log('Service Worker registered'))
     .catch(err=>console.warn('SW register failed', err));
 }
+
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const searchResults = document.getElementById('searchResults');
+const matchesList = document.getElementById('matchesList');
+
+// Дозволити пошук тільки якщо є текст
+pdfInput.addEventListener('change', () => {
+  searchBtn.disabled = !extractedText;
+});
+
+searchBtn.addEventListener('click', () => {
+  const query = searchInput.value.trim();
+  if(!query) return alert('Введіть хоча б одне ключове слово.');
+  performSearch(query, extractedText);
+});
+
+function performSearch(query, text){
+  const words = query.split(',').map(w => w.trim().toLowerCase()).filter(Boolean);
+  if(words.length === 0) return;
+
+  // Очищуємо попереднє підсвічування
+  let displayText = extractedText;
+  const counts = {};
+
+  words.forEach(word=>{
+    const regex = new RegExp(`(${escapeRegExp(word)})`, 'gi');
+    counts[word] = (displayText.match(regex) || []).length;
+    displayText = displayText.replace(regex, '<span class="highlight">$1</span>');
+  });
+
+  fullTextContainer.innerHTML = displayText;
+  fullTextContainer.style.display = 'block';
+  fullTextContainer.setAttribute('aria-hidden', 'false');
+
+  // Відображення результатів
+  matchesList.innerHTML = '';
+  for(const [word,count] of Object.entries(counts)){
+    const li = document.createElement('li');
+    li.textContent = `"${word}": ${count} співпадінь`;
+    matchesList.appendChild(li);
+  }
+  searchResults.style.display = 'block';
+}
+
+// допоміжна функція для escape RegExp
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
