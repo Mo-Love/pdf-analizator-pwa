@@ -3,18 +3,18 @@ let pdfText = '';
 
 async function initLLM() {
   const loading = document.getElementById('loading');
-  loading.classList.remove('hidden');
+  loading.style.display = 'block';
   loading.innerHTML = '<div class="spinner"></div>Завантажую модель LLM...';
 
   try {
     const selectedModel = await webllm.GetWebLLMModel('Gemma-2B-2bit');
     llm = await selectedModel.create();
     loading.innerHTML = '<div class="spinner"></div>Модель готова!';
-    setTimeout(() => loading.classList.add('hidden'), 1000);
+    setTimeout(() => loading.style.display = 'none', 1000);
   } catch (error) {
     console.error('LLM error:', error);
     loading.innerHTML = 'Fallback-режим (базовий аналіз без AI)';
-    setTimeout(() => loading.classList.add('hidden'), 2000);
+    setTimeout(() => loading.style.display = 'none', 2000);
     llm = null;
   }
 }
@@ -23,7 +23,7 @@ async function analyzePDF() {
   const fileInput = document.getElementById('pdfInput');
   const file = fileInput.files[0];
   if (!file) {
-    fileInput.classList.add('error-shake');  // Анімація для помилки
+    fileInput.classList.add('error-shake');  // Анімація "трусіння" для помилки
     setTimeout(() => fileInput.classList.remove('error-shake'), 500);
     return alert('Обери PDF!');
   }
@@ -31,9 +31,8 @@ async function analyzePDF() {
   const loading = document.getElementById('loading');
   const progressBar = document.getElementById('progressBar');
   const progressFill = document.getElementById('progressFill');
-  const result = document.getElementById('result');
-  loading.classList.remove('hidden');
-  progressBar.classList.remove('hidden');
+  loading.style.display = 'block';
+  progressBar.style.display = 'block';
   loading.innerHTML = '<div class="spinner"></div>Парсю PDF...';
 
   try {
@@ -47,7 +46,7 @@ async function analyzePDF() {
       const textContent = await page.getTextContent();
       pdfText += textContent.items.map(item => item.str).join(' ') + '\n--- Сторінка ' + i + ' ---\n';
       
-      // Прогрес з анімацією
+      // Анімація прогресу
       const progress = (i / totalPages) * 100;
       progressFill.style.width = progress + '%';
       loading.innerHTML = `<div class="spinner"></div>Обробляю сторінку ${i}/${totalPages}...`;
@@ -64,7 +63,7 @@ async function analyzePDF() {
     let matches = '';
 
     loading.innerHTML = '<div class="spinner"></div>Генерую переказ та пошук...';
-    progressFill.style.width = '100%';
+    progressFill.style.width = '100%';  // Завершення прогресу
 
     if (llm) {
       const summaryPrompt = `Зроби короткий переказ тексту українською (3 речення, простими словами): ${pdfText.substring(0, 2000)}`;
@@ -93,51 +92,22 @@ async function analyzePDF() {
       });
     }
 
+    const result = document.getElementById('result');
     result.innerHTML = `
       <strong>Спрощений текст (перші 500 символів):</strong> ${simplified.substring(0, 500)}...<br>
       <strong>Переказ:</strong> ${summary}<br>
       <strong>Співпадіння по ключам:</strong> <pre>${matches}</pre>
     `;
-    result.classList.remove('hidden');  // Активація fade-in
+    result.style.opacity = '1';  // Активація fade-in
   } catch (error) {
-    result.innerHTML = `Помилка: ${error.message}`;
-    result.classList.add('error-shake');
-    setTimeout(() => result.classList.remove('error-shake'), 500);
+    document.getElementById('result').innerHTML = `Помилка: ${error.message}`;
+    document.getElementById('result').classList.add('error-shake');  // Трусіння для помилки
+    setTimeout(() => document.getElementById('result').classList.remove('error-shake'), 500);
   } finally {
-    loading.classList.add('hidden');
-    progressBar.classList.add('hidden');
+    loading.style.display = 'none';
+    progressBar.style.display = 'none';
     progressFill.style.width = '0%';
   }
 }
 
-// Функція для toggle теми
-function toggleTheme() {
-  document.body.classList.toggle('dark-theme');
-  const icon = document.querySelector('.theme-toggle i');
-  icon.classList.toggle('fa-moon');
-  icon.classList.toggle('fa-sun');
-  localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
-}
-
-// Завантаження теми з localStorage
-if (localStorage.getItem('theme') === 'dark') {
-  document.body.classList.add('dark-theme');
-  document.querySelector('.theme-toggle i').classList.replace('fa-moon', 'fa-sun');
-}
-
 initLLM();
-// ... (решта коду як раніше, додай в кінець initLLM)
-
-function toggleTheme() {
-  document.body.classList.toggle('dark-theme');
-  const icon = document.querySelector('.theme-toggle i');
-  icon.classList.toggle('fa-moon');
-  icon.classList.toggle('fa-sun');
-  localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
-}
-
-// Завантаження теми з localStorage
-if (localStorage.getItem('theme') === 'dark') {
-  document.body.classList.add('dark-theme');
-  document.querySelector('.theme-toggle i').classList.replace('fa-moon', 'fa-sun');
-}
