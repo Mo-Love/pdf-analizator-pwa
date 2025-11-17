@@ -1,68 +1,77 @@
 <!doctype html>
-<h1>PDF-Аналізатор UA</h1>
-<p class="subtitle">Завантажуйте PDF, дивіться повний текст та отримуйте скорочений аналіз</p>
-</header>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0057b7" />
+  <title>PDF-Аналізатор UA</title>
 
+  <!-- MANIFEST & ICONS (відносні шляхи) -->
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icons/icon-192.png">
 
-<section class="controls">
-<label class="input-file">
-<input id="pdfInput" type="file" accept="application/pdf">
-<span>Вибрати PDF</span>
-</label>
+  <!-- Styles (відносний шлях) -->
+  <link rel="stylesheet" href="./style.css">
 
+  <!-- PDF.js (CDN) -->
+  <script src="https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>PDF-Аналізатор UA</h1>
+      <p class="subtitle">Завантажуйте PDF, дивіться повний текст та отримуйте стислий аналіз</p>
+    </header>
 
-<div id="fileName" class="file-name">Файл не вибраний</div>
+    <section class="controls">
+      <label class="input-file">
+        <input id="pdfInput" type="file" accept="application/pdf">
+        <span>Вибрати PDF</span>
+      </label>
 
+      <div id="fileName" class="file-name">Файл не вибраний</div>
 
-<div id="loadingIndicator" class="loading" aria-hidden="true">
-<div class="spinner" role="status" aria-label="Завантаження"></div>
-<div id="loadingText">Завантаження моделі та обробка...</div>
-</div>
+      <div id="loadingIndicator" class="loading" aria-hidden="true" style="display:none;">
+        <div class="spinner" role="status" aria-label="Завантаження"></div>
+        <div id="loadingText">Завантаження моделі та обробка...</div>
+      </div>
 
+      <div class="actions">
+        <button id="analyzeBtn" disabled>Аналізувати PDF</button>
+        <button id="showFullTextBtn" disabled>Показати повний текст</button>
+      </div>
+    </section>
 
-<div class="actions">
-<button id="analyzeBtn" disabled>Аналізувати PDF</button>
-<button id="showFullTextBtn" disabled>Показати повний текст</button>
-</div>
-</section>
+    <section id="results" class="results">
+      <h2>Результати</h2>
+      <div id="summary" class="card">Тут з'явиться стислий висновок...</div>
+      <div id="keyPhrases" class="card">Ключові фрази: <span id="phrasesList">-</span></div>
+      <div id="fullTextContainer" class="card full-text" aria-hidden="true"></div>
+    </section>
 
+    <section class="accordion-section">
+      <button class="accordion-btn">📱 Інструкція: встановлення на Android (Chrome)</button>
+      <div class="accordion-content">
+        <!-- Текст інструкції (тільки приклад, встав повний з повідомлення) -->
+        <p><b>Покрокова інструкція для встановлення на Android (Chrome, версія 90+):</b></p>
+        <ol>
+          <li>Відкрий сайт у Chrome на телефоні: https://mo-love.github.io/pdf-analizator-pwa/</li>
+          <li>Почекай кешування моделі (~500 MB при першому запуску).</li>
+          <li>Меню → «Додати на головний екран» → «Додати».</li>
+        </ol>
+        <p><b>Додаткові поради:</b></p>
+        <ul>
+          <li>Якщо Chrome не пропонує встановлення — перевір HTTPS або версію браузера.</li>
+        </ul>
+      </div>
+    </section>
 
-<section id="results" class="results">
-<h2>Результати</h2>
-<div id="summary" class="card">Тут з'явиться стислий висновок...</div>
-<div id="keyPhrases" class="card">Ключові фрази: <span id="phrasesList">-</span></div>
+    <footer class="footer">
+      <small>© PDF-Аналізатор UA — Mo-Love</small>
+    </footer>
+  </main>
 
-
-<div id="fullTextContainer" class="card full-text" aria-hidden="true"></div>
-</section>
-
-
-<section class="accordion-section">
-<button class="accordion-btn">📱 Інструкція: встановлення на Android (Chrome)</button>
-<div class="accordion-content">
-<p><b>Покрокова інструкція для встановлення на Android (Chrome, версія 90+):</b></p>
-<ol>
-<li>Запусти Chrome на телефоні й відкрий: <a href="https://mo-love.github.io/pdf-analizator-pwa/" target="_blank">mo-love.github.io/pdf-analizator-pwa</a></li>
-<li>Почекай — при першому запуску модель кешуватиметься (~500 MB).</li>
-<li>Натисни меню (три крапки) → «Додати на головний екран» → «Додати».</li>
-<li>Запусти з іконки — додаток відкриється в standalone-режимі.</li>
-</ol>
-<p><b>Додаткові поради:</b></p>
-<ul>
-<li>Оновлення: PWA автоматично запропонує оновлення при зміні коду.</li>
-<li>Видалення: тримай іконку → «Видалити».</li>
-<li>Якщо Chrome не пропонує встановити — перевір HTTPS чи версію браузера.</li>
-</ul>
-</div>
-</section>
-
-
-<footer class="footer">
-<small>© PDF-Аналізатор UA — Mo-Love</small>
-</footer>
-</main>
-
-
-<script src="/app.js"></script>
+  <!-- App JS (відносний шлях) -->
+  <script src="./app.js"></script>
 </body>
 </html>
