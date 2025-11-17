@@ -50,7 +50,7 @@ button[disabled]{opacity:0.5;cursor:not-allowed}
 .full-text{max-height:360px;overflow:auto;display:none;white-space:pre-wrap;padding:10px}
 
 .accordion-section{margin-top:18px}
-.accordion-btn{width:100%;text-align:left;padding:12px;border-radius:10px;background:#eef6ff;border:none;cursor:pointer;font-weight:600;transition:0.3s ease}
+.accordion-btn{width:100%;text-align:left;padding:12px;border-radius:10px;background:#075dc1;border:none;cursor:pointer;font-weight:600;transition:0.3s ease}
 .accordion-btn:hover{background:#d0e3ff}
 .accordion-content{display:none;padding:12px;margin-top:8px;background:#fbfdff;border-radius:10px;border:1px solid #eef3ff;animation:fadeSlide 0.5s ease}
 
