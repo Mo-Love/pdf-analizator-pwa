@@ -1,12 +1,12 @@
 {
   "name": "PDF-Аналізатор UA",
-  "short_name": "PDF-Analyzer",
-  "start_url": ".",
+  "short_name": "PDF-UA",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#f5f6fa",
+  "theme_color": "#0057b7",
   "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}
+    {"src":"./icons/icon-192.png","sizes":"192x192","type":"image/png"},
+    {"src":"./icons/icon-512.png","sizes":"512x512","type":"image/png"}
   ]
 }
