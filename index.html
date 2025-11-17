@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF-Аналізатор UA</title>
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.18/dist/web-llm.js"></script>
+  <style> body { font-family: Arial; padding: 20px; } input, button { margin: 10px; padding: 10px; } #result { border: 1px solid #ccc; padding: 10px; height: 300px; overflow: auto; } </style>
+</head>
+<body>
+  <h1>Офлайн PDF-Аналізатор UA</h1>
+  <input type="file" id="pdfInput" accept=".pdf" />
+  <input type="text" id="keywordsInput" placeholder="Ключові слова (через кому)" />
+  <button onclick="analyzePDF()">Аналізувати</button>
+  <div id="result"></div>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  </script>
+</body>
+</html>
