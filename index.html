@@ -1,153 +1,68 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF-Аналізатор UA</title>
-  <link rel="manifest" href="manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.18/dist/web-llm.js"></script>
-  <style>
-    body {
-      font-family: 'Roboto', Arial, sans-serif;
-      padding: 20px;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      color: #333;
-      margin: 0;
-      min-height: 100vh;
-    }
-    h1 {
-      text-align: center;
-      color: #007bff;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-    }
-    input, button {
-      margin: 10px;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 16px;
-      width: 80%;
-      max-width: 400px;
-      display: block;
-      margin: 10px auto;
-      transition: border-color 0.3s;
-    }
-    input:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 5px rgba(0,123,255,0.3);
-    }
-    button {
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    button:active {
-      animation: pulse 0.5s ease-in-out;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    #result {
-      border: 1px solid #ddd;
-      padding: 15px;
-      height: 300px;
-      overflow: auto;
-      border-radius: 8px;
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-top: 20px;
-      animation: fadeIn 0.5s ease-out;
-      opacity: 0;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #loading {
-      text-align: center;
-      color: #007bff;
-      font-weight: bold;
-      display: none;
-      margin: 20px;
-    }
-    .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #007bff;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 10px;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background: #f0f0f0;
-      border-radius: 5px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #4ecdc4, #007bff);
-      width: 0%;
-      transition: width 0.3s ease;
-      animation: progressAnim 2s ease-in-out;
-    }
-    @keyframes progressAnim {
-      0% { width: 0%; }
-      100% { width: 100%; }
-    }
-    .error-shake {
-      animation: shake 0.5s ease-in-out;
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    @media (max-width: 600px) {
-      input, button { width: 95%; }
-    }
-  </style>
-</head>
-<body>
-  <h1>Офлайн PDF-Аналізатор UA (переказ, спрощення, ключі)</h1>
-  <input type="file" id="pdfInput" accept=".pdf" />
-  <div id="fileName"></div>
-<div id="loadingIndicator" style="display:none;">
-    <div class="spinner"></div>
-    <p>Обробка PDF…</p>
+<!doctype html>
+<h1>PDF-Аналізатор UA</h1>
+<p class="subtitle">Завантажуйте PDF, дивіться повний текст та отримуйте скорочений аналіз</p>
+</header>
+
+
+<section class="controls">
+<label class="input-file">
+<input id="pdfInput" type="file" accept="application/pdf">
+<span>Вибрати PDF</span>
+</label>
+
+
+<div id="fileName" class="file-name">Файл не вибраний</div>
+
+
+<div id="loadingIndicator" class="loading" aria-hidden="true">
+<div class="spinner" role="status" aria-label="Завантаження"></div>
+<div id="loadingText">Завантаження моделі та обробка...</div>
 </div>
 
-  <input type="text" id="keywordsInput" placeholder="Ключові слова (через кому, напр. екологія, реформи)" />
-  <button onclick="analyzePDF()">Аналізувати</button>
-  <div id="loading">
-    <div class="spinner"></div>
-    Завантажую модель LLM...
-  </div>
-  <div class="progress-bar" id="progressBar" style="display: none;">
-    <div class="progress-fill" id="progressFill"></div>
-  </div>
-  <div id="result"></div>
-  <script src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-  </script>
+
+<div class="actions">
+<button id="analyzeBtn" disabled>Аналізувати PDF</button>
+<button id="showFullTextBtn" disabled>Показати повний текст</button>
+</div>
+</section>
+
+
+<section id="results" class="results">
+<h2>Результати</h2>
+<div id="summary" class="card">Тут з'явиться стислий висновок...</div>
+<div id="keyPhrases" class="card">Ключові фрази: <span id="phrasesList">-</span></div>
+
+
+<div id="fullTextContainer" class="card full-text" aria-hidden="true"></div>
+</section>
+
+
+<section class="accordion-section">
+<button class="accordion-btn">📱 Інструкція: встановлення на Android (Chrome)</button>
+<div class="accordion-content">
+<p><b>Покрокова інструкція для встановлення на Android (Chrome, версія 90+):</b></p>
+<ol>
+<li>Запусти Chrome на телефоні й відкрий: <a href="https://mo-love.github.io/pdf-analizator-pwa/" target="_blank">mo-love.github.io/pdf-analizator-pwa</a></li>
+<li>Почекай — при першому запуску модель кешуватиметься (~500 MB).</li>
+<li>Натисни меню (три крапки) → «Додати на головний екран» → «Додати».</li>
+<li>Запусти з іконки — додаток відкриється в standalone-режимі.</li>
+</ol>
+<p><b>Додаткові поради:</b></p>
+<ul>
+<li>Оновлення: PWA автоматично запропонує оновлення при зміні коду.</li>
+<li>Видалення: тримай іконку → «Видалити».</li>
+<li>Якщо Chrome не пропонує встановити — перевір HTTPS чи версію браузера.</li>
+</ul>
+</div>
+</section>
+
+
+<footer class="footer">
+<small>© PDF-Аналізатор UA — Mo-Love</small>
+</footer>
+</main>
+
+
+<script src="/app.js"></script>
 </body>
 </html>
