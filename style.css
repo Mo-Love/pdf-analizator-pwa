@@ -53,3 +53,14 @@ button[disabled]{opacity:0.5;cursor:not-allowed}
 .footer{margin-top:18px;text-align:center;color:var(--muted)}
 
 @media (max-width:600px){.container{margin:12px;padding:14px}}
+
+.search-section{margin-top:12px;display:flex;gap:10px;align-items:center}
+.search-section input{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+}
+.search-section button{padding:10px 14px;border-radius:10px;background:var(--accent);color:white;border:none;cursor:pointer}
+.highlight{background-color: #fffb91; padding:0 2px; border-radius:2px;}
+
