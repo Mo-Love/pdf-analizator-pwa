@@ -3,253 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF-Аналізатор UA</title>
-  <link rel="manifest" href="manifest.json"><!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF-Аналізатор UA</title>
-  <link rel="manifest" href="manifest.json">
+  <title>Встановлення PDF-Аналізатора UA на Android</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.18/dist/web-llm.js"></script>
   <style>
-    /* Inline стилі (як раніше) */
-    :root {
-      --primary-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      --dark-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-      --primary-color: #007bff;
-      --accent-gradient: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-      --glass-bg: rgba(255, 255, 255, 0.1);
-      --dark-glass: rgba(0, 0, 0, 0.2);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    body {
+      font-family: 'Roboto', sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffed4e 0%, #007bff 100%);
+      color: #333;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    body.light-theme { background: var(--primary-bg); color: #333; }
-    body.dark-theme { background: var(--dark-bg); color: #f0f0f0; }
-    body.dark-theme .glass-card { background: var(--dark-glass); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .theme-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; cursor: pointer; font-size: 24px; color: var(--primary-color); transition: var(--transition); }
-    .theme-toggle:hover { transform: rotate(180deg) scale(1.2); }
-    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; display: grid; gap: 20px; align-items: center; }
-    h1 { text-align: center; color: var(--primary-color); text-shadow: 1px 1px 2px rgba(0,0,0,0.1); font-size: 2em; margin-bottom: 0; animation: fadeInDown 1s ease-out; }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    .upload-area { position: relative; display: grid; place-items: center; transition: var(--transition); }
-    #pdfInput { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-    label[for="pdfInput"] { padding: 40px; border: 2px dashed var(--primary-color); border-radius: 12px; text-align: center; cursor: pointer; transition: var(--transition); background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-    label[for="pdfInput"]:hover { background: rgba(0, 123, 255, 0.1); transform: scale(1.02); border-color: #0056b3; animation: fileHover 0.5s ease-out; }
-    @keyframes fileHover { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1.02); } }
-    body.dark-theme label[for="pdfInput"] { background: rgba(0, 0, 0, 0.3); }
-    .file-name { text-align: center; margin-top: 10px; color: #28a745; font-weight: bold; animation: fadeInUp 0.5s ease-out; opacity: 0; display: none; }
-    .file-name.show { opacity: 1; display: block; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    input[type="text"] { padding: 15px; border-radius: 25px; border: 1px solid rgba(0, 0, 0, 0.1); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); transition: var(--transition); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-    input[type="text"]:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); outline: none; }
-    body.dark-theme input[type="text"] { background: rgba(0, 0, 0, 0.5); color: #f0f0f0; border-color: rgba(255, 255, 255, 0.2); }
-    button, .camera-button { padding: 15px 30px; border-radius: 25px; background: var(--accent-gradient); color: white; border: none; cursor: pointer; font-weight: bold; font-size: 16px; transition: var(--transition); box-shadow: var(--shadow); position: relative; overflow: hidden; margin: 10px; }
-    .camera-button { background: linear-gradient(45deg, #17a2b8, #20c997); }
-    button::before, .camera-button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s; }
-    button:hover::before, .camera-button:hover::before { left: 100%; }
-    button:hover, .camera-button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
-    button:active, .camera-button:active { animation: wave 0.6s ease-out; }
-    @keyframes wave { 0% { transform: scale(1); } 50% { transform: scale(0.98); } 100% { transform: scale(1); } }
-    #loading { text-align: center; color: var(--primary-color); font-weight: bold; display: none; margin: 20px; padding: 20px; border-radius: 10px; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); animation: fadeIn 0.5s ease-out; }
-    body.dark-theme #loading { background: rgba(0, 0, 0, 0.3); }
-    .spinner { border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .progress-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; margin: 10px 0; display: none; }
-    .progress-fill { height: 100%; background: var(--accent-gradient); width: 0%; transition: width 0.3s ease; animation: progressWave 2s ease-in-out infinite; }
-    @keyframes progressWave { 0%, 100% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.5); } 50% { box-shadow: 0 0 20px rgba(78, 205, 196, 0.8); } }
-    #result { margin-top: 20px; padding: 20px
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.18/dist/web-llm.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>  <!-- Для OCR -->
-  <style>
-    /* Inline стилі (як раніше) */
-    :root {
-      --primary-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      --dark-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-      --primary-color: #007bff;
-      --accent-gradient: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-      --glass-bg: rgba(255, 255, 255, 0.1);
-      --dark-glass: rgba(0, 0, 0, 0.2);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    h1 {
+      text-align: center;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 30px;
+      animation: fadeInDown 1s ease-out;
     }
-    body.light-theme { background: var(--primary-bg); color: #333; }
-    body.dark-theme { background: var(--dark-bg); color: #f0f0f0; }
-    body.dark-theme .glass-card { background: var(--dark-glass); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .theme-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; cursor: pointer; font-size: 24px; color: var(--primary-color); transition: var(--transition); }
-    .theme-toggle:hover { transform: rotate(180deg) scale(1.2); }
-    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; display: grid; gap: 20px; align-items: center; }
-    h1 { text-align: center; color: var(--primary-color); text-shadow: 1px 1px 2px rgba(0,0,0,0.1); font-size: 2em; margin-bottom: 0; animation: fadeInDown 1s ease-out; }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    .upload-area { position: relative; display: grid; place-items: center; transition: var(--transition); }
-    #pdfInput { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-    label[for="pdfInput"] { padding: 40px; border: 2px dashed var(--primary-color); border-radius: 12px; text-align: center; cursor: pointer; transition: var(--transition); background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-    label[for="pdfInput"]:hover { background: rgba(0, 123, 255, 0.1); transform: scale(1.02); border-color: #0056b3; animation: fileHover 0.5s ease-out; }
-    @keyframes fileHover { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1.02); } }
-    body.dark-theme label[for="pdfInput"] { background: rgba(0, 0, 0, 0.3); }
-    .file-name { text-align: center; margin-top: 10px; color: #28a745; font-weight: bold; animation: fadeInUp 0.5s ease-out; opacity: 0; display: none; }
-    .file-name.show { opacity: 1; display: block; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    input[type="text"] { padding: 15px; border-radius: 25px; border: 1px solid rgba(0, 0, 0, 0.1); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); transition: var(--transition); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-    input[type="text"]:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1); outline: none; }
-    body.dark-theme input[type="text"] { background: rgba(0, 0, 0, 0.5); color: #f0f0f0; border-color: rgba(255, 255, 255, 0.2); }
-    button, .camera-button { padding: 15px 30px; border-radius: 25px; background: var(--accent-gradient); color: white; border: none; cursor: pointer; font-weight: bold; font-size: 16px; transition: var(--transition); box-shadow: var(--shadow); position: relative; overflow: hidden; margin: 10px; }
-    .camera-button { background: linear-gradient(45deg, #17a2b8, #20c997); }
-    button::before, .camera-button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s; }
-    button:hover::before, .camera-button:hover::before { left: 100%; }
-    button:hover, .camera-button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
-    button:active, .camera-button:active { animation: wave 0.6s ease-out; }
-    @keyframes wave { 0% { transform: scale(1); } 50% { transform: scale(0.98); } 100% { transform: scale(1); } }
-    #loading { text-align: center; color: var(--primary-color); font-weight: bold; display: none; margin: 20px; padding: 20px; border-radius: 10px; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); animation: fadeIn 0.5s ease-out; }
-    body.dark-theme #loading { background: rgba(0, 0, 0, 0.3); }
-    .spinner { border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .progress-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; margin: 10px 0; display: none; }
-    .progress-fill { height: 100%; background: var(--accent-gradient); width: 0%; transition: width 0.3s ease; animation: progressWave 2s ease-in-out infinite; }
-    @keyframes progressWave { 0%, 100% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.5); } 50% { box-shadow: 0 0 20px rgba(78, 205, 196, 0.8); } }
-    #result { margin-top: 20px; padding: 20px; border-radius: 15px; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: var(--shadow); height: 300px; overflow-y: auto; display: none; animation: glassSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-    @keyframes glassSlideIn { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    body.dark-theme #result { background: var(--dark-glass); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .install-link { display: block; text-align: center; margin-top: 20px; color: var(--primary-color); text-decoration: none; font-weight: bold; transition: var(--transition); padding: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.8); }
-    .install-link:hover { background: rgba(0, 123, 255, 0.1); transform: scale(1.05); }
-    body.dark-theme .install-link { background: rgba(0, 0, 0, 0.3); }
-    .hidden { display: none !important; }
-    .error-shake { animation: shake 0.5s ease-in-out; }
-    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-    @media (max-width: 600px) { .container { padding: 20px; } h1 { font-size: 1.5em; } button, .camera-button { width: 95%; } }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      animation: fadeInUp 1s ease-out 0.5s both;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-left: 5px solid #007bff;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .step:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .step-number {
+      background: #007bff;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 15px;
+      animation: bounce 0.6s ease-in-out;
+    }
+    @keyframes bounce {
+      0%, 20%, 60%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      80% { transform: translateY(-5px); }
+    }
+    .step-text {
+      flex: 1;
+      line-height: 1.5;
+    }
+    .step-icon {
+      margin-left: 15px;
+      font-size: 20px;
+      color: #28a745;
+    }
+    .back-button {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .back-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    @media (max-width: 600px) {
+      .container { padding: 20px; }
+      .step { flex-direction: column; text-align: center; }
+      .step-number { margin-bottom: 10px; margin-right: 0; }
+      .step-icon { margin-top: 10px; }
+    }
   </style>
 </head>
-<body class="light-theme">
-  <div class="theme-toggle">
-    <i class="fas fa-moon" onclick="toggleTheme()"></i>
-  </div>
+<body>
+  <h1><i class="fas fa-mobile-alt"></i> Як встановити PDF-Аналізатор UA на Android</h1>
   <div class="container">
-    <h1><i class="fas fa-file-pdf"></i> PDF-Аналізатор UA</h1>
-    <div class="upload-area">
-      <input type="file" id="pdfInput" accept=".pdf" />
-      <label for="pdfInput"><i class="fas fa-cloud-upload-alt"></i> Обери PDF-файл</label>
-      <div id="fileName" class="file-name"><i class="fas fa-check"></i> <span id="fileNameText"></span></div>  <!-- Показ назви файлу -->
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-text">
+        <strong>Відкрий сайт у Google Chrome на телефоні:</strong><br>
+        Перейди за посиланням mo-love.github.io/pdf-analizator-pwa.<br>
+        Зачекай завантаження (перший раз модель кешуватиметься ~500 MB для офлайн).
+      </div>
+      <i class="fas fa-globe step-icon"></i>
     </div>
-    <button class="camera-button" onclick="scanFromCamera()"><i class="fas fa-camera"></i> Сканувати з камери</button>  <!-- Нова кнопка для камери -->
-    <input type="text" id="keywordsInput" placeholder="Ключові слова (через кому, напр. екологія, реформи)" />
-    <button onclick="analyzePDF()"><i class="fas fa-search"></i> Аналізувати</button>
-    <a href="install.html" class="install-link"><i class="fas fa-mobile-alt"></i> Як встановити на Android</a>
-    <div id="loading" class="hidden">
-      <div class="spinner"></div>
-      Завантажую модель LLM...
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-text">
+        <strong>Додай на головний екран:</strong><br>
+        Натисни меню (три крапки у правому верхньому куті) → "Додати на головний екран" (або "Install app").<br>
+        Підтвердь "Додати" — іконка з'явиться на екрані!
+      </div>
+      <i class="fas fa-plus-circle step-icon"></i>
     </div>
-    <div class="progress-bar hidden" id="progressBar">
-      <div class="progress-fill" id="progressFill"></div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-text">
+        <strong>Готово! Запусти з іконки:</strong><br>
+        Додаток відкриється у повноекранному режимі (без браузера).<br>
+        Офлайн: Працює без інтернету після першого запуску. Тестуй з UA-PDF!
+      </div>
+      <i class="fas fa-check-circle step-icon"></i>
     </div>
-    <div id="result" class="glass-card hidden"></div>
+    <a href="../index.html" class="back-button"><i class="fas fa-arrow-left"></i> Повернутися до головного</a>
   </div>
-  <script>
-    // Inline app.js з підтримкою камери та анімацією завантаження
-    let llm = null;
-    let pdfText = '';
-
-    // Анімація та показ назви файлу при завантаженні
-    document.getElementById('pdfInput').addEventListener('change', function() {
-      const label = document.querySelector('label[for="pdfInput"]');
-      const fileNameDiv = document.getElementById('fileName');
-      const fileNameText = document.getElementById('fileNameText');
-      const file = this.files[0];
-      if (file) {
-        fileNameText.textContent = file.name;
-        fileNameDiv.classList.add('show');
-        label.style.animation = 'fileHover 0.5s ease-out';
-        setTimeout(() => label.style.animation = '', 500);
-        console.log('Файл завантажено: ' + file.name);  // Дебаг
-      }
-    });
-
-    // Сканування з камери
-    async function scanFromCamera() {
-      const loading = document.getElementById('loading');
-      loading.classList.remove('hidden');
-      loading.innerHTML = '<div class="spinner"></div>Відкриваю камеру...';
-
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        const video = document.createElement('video');
-        video.srcObject = stream;
-        video.play();
-
-        // Показуємо відео (модальне вікно для скріншота)
-        const modal = document.createElement('div');
-        modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000;display:flex;align-items:center;justify-content:center;';
-        modal.innerHTML = `
-          <div style="background:white;border-radius:10px;padding:20px;text-align:center;">
-            <video id="cameraVideo" width="300" autoplay></video><br>
-            <button onclick="capturePhoto()" style="padding:10px;margin:5px;background:var(--primary-color);color:white;border:none;border-radius:5px;">Зробити фото</button>
-            <button onclick="closeCamera(modal, stream)" style="padding:10px;margin:5px;background:red;color:white;border:none;border-radius:5px;">Закрити</button>
-          </div>
-        `;
-        document.body.appendChild(modal);
-        document.getElementById('cameraVideo').srcObject = stream;
-
-        window.capturePhoto = async () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          canvas.getContext('2d').drawImage(video, 0, 0);
-          canvas.toBlob(async (blob) => {
-            const file = new File([blob], 'scan.jpg', { type: 'image/jpeg' });
-            // OCR тексту з фото (Tesseract.js для укр.)
-            loading.innerHTML = '<div class="spinner"></div>Розпізнаю текст з фото...';
-            const { data: { text } } = await Tesseract.recognize(file, 'ukr', { logger: m => console.log(m) });
-            pdfText = text;  // Текст з фото як "PDF-текст"
-            document.getElementById('keywordsInput').focus();  // Фокус на ключі
-            closeCamera(modal, stream);
-            loading.classList.add('hidden');
-            console.log('Текст з камери: ', text.substring(0, 200));  // Дебаг
-          }, 'image/jpeg');
-        };
-      } catch (error) {
-        console.error('Camera error:', error);
-        loading.innerHTML = 'Камера недоступна (перевір дозволи)';
-        setTimeout(() => loading.classList.add('hidden'), 2000);
-      }
-    }
-
-    function closeCamera(modal, stream) {
-      modal.remove();
-      stream.getTracks().forEach(track => track.stop());
-    }
-
-    // Решта функцій (initLLM, analyzePDF, toggleTheme) як у попередньому коді
-    async function initLLM() {
-      // ... (як раніше)
-    }
-
-    async function analyzePDF() {
-      // ... (як раніше, з перевіркою pdfText або file)
-      if (!pdfText && !fileInput.files[0]) {
-        alert('Обери PDF або відскануй з камери!');
-        return;
-      }
-      // ... (решта логіки)
-    }
-
-    function toggleTheme() {
-      // ... (як раніше)
-    }
-
-    if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark-theme');
-      document.querySelector('.theme-toggle i').classList.replace('fa-moon', 'fa-sun');
-    }
-
-    initLLM();
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-  </script>
 </body>
 </html>
