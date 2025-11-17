@@ -1,80 +1,55 @@
-/* Загальний фон */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "Inter", Arial, sans-serif;
-    background: linear-gradient(135deg, #8ec5fc, #e0c3fc);
-    backdrop-filter: blur(8px);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+:root{
+  --bg: #f5f6fa;
+  --card: #ffffff;
+  --accent: #0057b7;
+  --muted: #6b7280;
 }
 
-/* Контейнер liquid glass */
-.glass-container {
-    width: 90%;
-    max-width: 600px;
-    padding: 25px;
-    border-radius: 20px;
-
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-
-    backdrop-filter: blur(18px) saturate(180%);
-    -webkit-backdrop-filter: blur(18px) saturate(180%);
-
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-
-    animation: fadeIn 0.6s ease-out;
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg);
+  color:#0f172a;
 }
 
-/* Анімація появи */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.container{
+  max-width:960px;
+  margin:28px auto;
+  padding:20px;
+  background:var(--card);
+  border-radius:14px;
+  box-shadow:0 8px 30px rgba(2,6,23,0.08);
 }
 
-/* Заголовок */
-.title {
-    color: #000;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 20px;
+.header h1{margin:0;font-size:22px}
+.subtitle{color:var(--muted);margin-top:6px}
+
+.controls{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.input-file{display:inline-flex;align-items:center;gap:10px}
+.input-file input{display:none}
+.input-file span{
+  display:inline-block;padding:12px 16px;background:linear-gradient(180deg,#0b61c6,#0057b7);color:white;border-radius:10px;cursor:pointer;font-weight:600
 }
 
-/* Поле пошуку */
-.search-box {
-    width: 100%;
-    padding: 12px 15px;
-    border-radius: 14px;
-    border: none;
-    font-size: 16px;
-    margin-bottom: 18px;
+.file-name{font-size:13px;color:var(--muted)}
+.actions{display:flex;gap:10px;margin-top:6px}
+button{background:var(--accent);border:none;color:white;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+button[disabled]{opacity:0.5;cursor:not-allowed}
 
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(255,255,255,0.5);
-    backdrop-filter: blur(10px);
+.loading{display:flex;align-items:center;gap:12px;margin-top:12px}
+.spinner{width:44px;height:44px;border-radius:50%;border:5px solid #e6eefc;border-top-color:var(--accent);animation:spin 0.9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-    transition: 0.25s;
-}
+.results{margin-top:20px}
+.card{background:#fbfdff;padding:14px;border-radius:12px;margin-top:10px;border:1px solid #eef3ff}
+.full-text{max-height:360px;overflow:auto;display:none;white-space:pre-wrap}
 
-.search-box:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.65);
-    border-color: rgba(255,255,255,0.9);
-}
+.accordion-section{margin-top:18px}
+.accordion-btn{width:100%;text-align:left;padding:12px;border-radius:10px;background:#eef6ff;border:none;cursor:pointer;font-weight:600}
+.accordion-content{display:none;padding:12px;margin-top:8px;background:#fbfdff;border-radius:10px;border:1px solid #eef3ff}
 
-/* Текст */
-.content {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #000;
-}
+.footer{margin-top:18px;text-align:center;color:var(--muted)}
 
-/* Підсвічення знайдених слів */
-mark {
-    background: #ffe600;
-    padding: 2px 4px;
-    border-radius: 4px;
-}
+@media (max-width:600px){.container{margin:12px;padding:14px}}
