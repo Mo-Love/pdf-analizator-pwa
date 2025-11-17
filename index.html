@@ -1,77 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#0057b7" />
-  <title>PDF-Аналізатор UA</title>
-
-  <!-- MANIFEST & ICONS (відносні шляхи) -->
-  <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="./icons/icon-192.png">
-
-  <!-- Styles (відносний шлях) -->
-  <link rel="stylesheet" href="./style.css">
-
-  <!-- PDF.js (CDN) -->
-  <script src="https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF-Аналізатор — Інструкція</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="container">
-    <header class="header">
-      <h1>PDF-Аналізатор UA</h1>
-      <p class="subtitle">Завантажуйте PDF, дивіться повний текст та отримуйте стислий аналіз</p>
-    </header>
 
-    <section class="controls">
-      <label class="input-file">
-        <input id="pdfInput" type="file" accept="application/pdf">
-        <span>Вибрати PDF</span>
-      </label>
+    <div class="glass-container">
 
-      <div id="fileName" class="file-name">Файл не вибраний</div>
+        <h2 class="title">📱 Інструкція: встановлення на Android (Chrome)</h2>
 
-      <div id="loadingIndicator" class="loading" aria-hidden="true" style="display:none;">
-        <div class="spinner" role="status" aria-label="Завантаження"></div>
-        <div id="loadingText">Завантаження моделі та обробка...</div>
-      </div>
+        <!-- 🔍 Поле пошуку -->
+        <input 
+            id="searchInput" 
+            type="text" 
+            placeholder="Пошук по інструкції..." 
+            class="search-box"
+        >
 
-      <div class="actions">
-        <button id="analyzeBtn" disabled>Аналізувати PDF</button>
-        <button id="showFullTextBtn" disabled>Показати повний текст</button>
-      </div>
-    </section>
+        <!-- 📄 Текст інструкції -->
+        <div id="content" class="content">
+            <p>Щоб встановити PDF-Аналізатор на Android через Chrome, виконайте наступні кроки:</p>
+            <p>1. Відкрийте Google Chrome.</p>
+            <p>2. Перейдіть на сторінку PDF-Аналізатора.</p>
+            <p>3. Натисніть меню (три крапки у правому верхньому куті).</p>
+            <p>4. Оберіть "Додати на головний екран".</p>
+            <p>5. Підтвердьте встановлення.</p>
+            <p>Тепер додаток зʼявиться на головному екрані вашого Android.</p>
+        </div>
 
-    <section id="results" class="results">
-      <h2>Результати</h2>
-      <div id="summary" class="card">Тут з'явиться стислий висновок...</div>
-      <div id="keyPhrases" class="card">Ключові фрази: <span id="phrasesList">-</span></div>
-      <div id="fullTextContainer" class="card full-text" aria-hidden="true"></div>
-    </section>
+    </div>
 
-    <section class="accordion-section">
-      <button class="accordion-btn">📱 Інструкція: встановлення на Android (Chrome)</button>
-      <div class="accordion-content">
-        <!-- Текст інструкції (тільки приклад, встав повний з повідомлення) -->
-        <p><b>Покрокова інструкція для встановлення на Android (Chrome, версія 90+):</b></p>
-        <ol>
-          <li>Відкрий сайт у Chrome на телефоні: https://mo-love.github.io/pdf-analizator-pwa/</li>
-          <li>Почекай кешування моделі (~500 MB при першому запуску).</li>
-          <li>Меню → «Додати на головний екран» → «Додати».</li>
-        </ol>
-        <p><b>Додаткові поради:</b></p>
-        <ul>
-          <li>Якщо Chrome не пропонує встановлення — перевір HTTPS або версію браузера.</li>
-        </ul>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <small>© PDF-Аналізатор UA — Mo-Love</small>
-    </footer>
-  </main>
-
-  <!-- App JS (відносний шлях) -->
-  <script src="./app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
